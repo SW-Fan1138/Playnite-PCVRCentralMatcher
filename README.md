@@ -11,6 +11,28 @@ A Playnite script extension that synchronizes your library with PCVR Central.
 - Automatically removes incorrect VR tags during synchronization
 - Safe to run multiple times
 
+## Screenshots
+
+### Sync Menu
+
+![Sync Menu](screenshots/sync-menu.png)
+
+### Synchronization Result
+
+![Synchronization Result](screenshots/update-dialog.png)
+
+### PCVR-Mod Tag
+
+![PCVR-Mod Tag](screenshots/pcvr-mod-tag.png)
+
+### PCVR-Native Tag
+
+![PCVR-Native Tag](screenshots/pcvr-native-tag.png)
+
+### PCVR Central Link
+
+![PCVR Central Link](screenshots/pcvr-link.png)
+
 ## Requirements
 
 Create the following Playnite tags before using the extension:
@@ -20,34 +42,38 @@ Create the following Playnite tags before using the extension:
 
 ## Installation
 
-1. Download the latest release.
-2. Extract the extension into:
+1. Download the latest release from the Releases page.
+2. Extract the ZIP archive.
+3. Copy the included folder
 
    ```
-   %appdata%\Playnite\Extensions\
+   PCVRCentralMatcher
    ```
 
-3. Restart Playnite.
-4. Create the required tags:
+   to your Playnite extensions directory:
+
+   ```
+   %appdata%\Roaming\Playnite\Extensions
+   ```
+
+4. Restart Playnite.
+5. Create the following tags in Playnite:
+
    - PCVR-Mod
    - PCVR-Native
 
-## Usage
+6. Run:
 
-Open:
+   ```
+   Main Menu → PCVR Central Matcher: Sync
+   ```
 
-```
-Main Menu → PCVR Central Matcher: Sync
-```
+The extension will automatically:
 
-The extension will:
-
-- Download the PCVR Central catalog
-- Match games against your Playnite library
-- Add a "PCVR Central" link
-- Apply the correct VR tag:
-  - PCVR-Mod
-  - PCVR-Native
+- Match your library against the PCVR Central catalog
+- Add PCVR Central links
+- Apply the PCVR-Mod tag to games requiring VR mods
+- Apply the PCVR-Native tag to games with built-in PCVR support
 
 ## Tags
 
@@ -78,6 +104,10 @@ This project was created collaboratively by the author and Microsoft Copilot (GP
 The author defined the feature set, performed all testing and validation, and made all release decisions. Microsoft Copilot assisted with code generation, troubleshooting, refactoring, and documentation.
 
 Every release is manually reviewed and tested before publication.
+
+## Note
+
+This extension currently targets Playnite 10 and is implemented as a PowerShell script extension.
 
 ## Credits
 
