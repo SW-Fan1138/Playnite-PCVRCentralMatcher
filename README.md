@@ -40,6 +40,10 @@ Create the following Playnite tags before using the extension:
 - PCVR-Mod
 - PCVR-Native
 
+## Download
+
+Download the latest release from the Releases section of this repository.
+
 ## Installation
 
 1. Download the latest release from the Releases page.
