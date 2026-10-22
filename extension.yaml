@@ -1,7 +1,0 @@
-Id: PCVRCentralMatcher_Extension
-Name: PCVR Central Matcher
-Author: SW-Fan1138
-Version: 1.0.0
-Type: Script
-Module: main.psm1
-Description: Syncs your Playnite library with PCVR Central. Adds PCVR Central links and automatically tags games as PCVR-Mod or PCVR-Native.
