@@ -1,127 +1,189 @@
 # PCVR Central Matcher
 
-A Playnite script extension that synchronizes your library with PCVR Central.
+A Playnite script extension that synchronizes your library with PCVR Central and automatically assigns PCVR-related tags.
+
+## Version
+
+1.1.0
+
+## Overview
+
+This extension compares the games in your Playnite library with the PCVR Central catalog and then:
+
+- adds a "PCVR Central" link to matching games
+- applies the `PCVR-Mod` tag when a title requires VR modding
+- applies the `PCVR-Native` tag when a title has native PCVR support
+- adds aggregated metadata tags such as framework, motion controls, and platform where available
+- ignores the platform tag `PCVR` when building the final platform list, so only relevant platform tags remain
+
+The extension is designed to be safe to run multiple times and to be efficient on subsequent syncs.
 
 ## Features
 
-- Matches your Playnite library against the PCVR Central catalog
+- Matches Playnite games against the PCVR Central catalog
 - Adds a "PCVR Central" link to supported games
-- Tags games requiring VR mods with `PCVR-Mod`
-- Tags games with built-in VR support with `PCVR-Native`
-- Automatically removes incorrect VR tags during synchronization
-- Safe to run multiple times
+- Applies `PCVR-Mod` and `PCVR-Native` tags
+- Extracts metadata from mod pages and maps it to tags
+- Normalizes platform values and ignores the generic `PCVR` platform tag
+- Stores cache and update files in the Playnite extension data directory
+- Performs a lightweight update-only pass after the initial sync
 
-## Screenshots
+## How it works
 
-### Sync Menu
+The script runs in a multi-step process:
 
-![Sync Menu](screenshots/sync-menu.png)
+1. Downloads the current game list from PCVR Central.
+2. Normalizes names to make matching robust across formatting differences.
+3. Searches the mod pages for each matching game and reads relevant metadata.
+4. Builds a normalized mod list and then derives a final tag list.
+5. Compares the result with the previous sync snapshot.
+6. Applies only the required changes to your Playnite library.
 
-### Synchronization Result
+### Files created
 
-![Synchronization Result](screenshots/update-dialog.png)
+The extension stores data in this directory:
 
-### PCVR-Mod Tag
+```text
+%AppData%\Roaming\Playnite\ExtensionsData\PCVRCentralMatcher_Extension
+```
 
-![PCVR-Mod Tag](screenshots/pcvr-mod-tag.png)
+The following files are generated:
 
-### PCVR-Native Tag
+- `PCVRCentral_Gamelist.csv`
+- `PCVRCentral_Gamelist_Update.csv`
+- `PCVRCentral_Modlist.csv`
+- `PCVRCentral_Modlist_Update.csv`
+- `PCVRCentral_Taglist.csv`
+- `PCVRCentral_Taglist_Update.csv`
 
-![PCVR-Native Tag](screenshots/pcvr-native-tag.png)
+## Sync behavior
 
-### PCVR Central Link
+### First sync
 
-![PCVR Central Link](screenshots/pcvr-link.png)
+On the first run, the script creates the full data set and processes the library in a full comparison mode.
+
+This means it:
+
+- reads the full PCVR Central catalog
+- reads the relevant mod metadata
+- creates the tag list
+- matches all Playnite titles against the catalog
+- applies tag changes and links where necessary
+
+### Later syncs
+
+On later runs, the script compares the old and new data snapshots and only processes changed entries.
+
+This makes the software:
+
+- much faster on recurring syncs
+- more stable for repeated use
+- more efficient for larger libraries
+
+### Tag logic
+
+The extension decides between the two main tags as follows:
+
+- `PCVR-Mod`: the game requires a VR mod
+- `PCVR-Native`: the game has native PCVR support
+
+Additional tag data can come from:
+
+- framework
+- motion controls
+- platform
+
+The platform normalization ignores the generic `PCVR` platform tag so that the final platform tags stay meaningful and match the actual hardware/platform categories.
 
 ## Requirements
 
-Create the following Playnite tags before using the extension:
+The script creates missing tags automatically if they are absent, but the expected main tags are:
 
-- PCVR-Mod
-- PCVR-Native
-
-## Download
-
-Download the latest release from the Releases section of this repository.
+- `PCVR-Mod`
+- `PCVR-Native`
 
 ## Installation
 
 1. Download the latest release from the Releases page.
 2. Extract the ZIP archive.
-3. Copy the included folder
+3. Copy the included folder to your Playnite extensions directory:
 
-   ```
-   PCVRCentralMatcher
-   ```
-
-   to your Playnite extensions directory:
-
-   ```
-   %appdata%\Roaming\Playnite\Extensions
+   ```text
+   %AppData%\Roaming\Playnite\Extensions
    ```
 
 4. Restart Playnite.
-5. Create the following tags in Playnite:
+5. Start the sync from:
 
-   - PCVR-Mod
-   - PCVR-Native
-
-6. Run:
-
-   ```
+   ```text
    Main Menu → PCVR Central Matcher: Sync
    ```
 
-The extension will automatically:
+## Screenshots
 
-- Match your library against the PCVR Central catalog
-- Add PCVR Central links
-- Apply the PCVR-Mod tag to games requiring VR mods
-- Apply the PCVR-Native tag to games with built-in PCVR support
+### Sync menu
 
-## Tags
+![Sync Menu](screenshots/sync-menu.png)
+
+### Synchronization result
+
+![Synchronization Result](screenshots/update-dialog.png)
+
+### PCVR-Mod tag
+
+![PCVR-Mod Tag](screenshots/pcvr-mod-tag.png)
+
+### PCVR-Native tag
+
+![PCVR-Native Tag](screenshots/pcvr-native-tag.png)
+
+### PCVR Central link
+
+![PCVR Central Link](screenshots/pcvr-link.png)
+
+## Tags used by the extension
 
 ### PCVR-Mod
 
-Games that require a VR modification.
-
-Examples:
-
-- Cyberpunk 2077
-- Ready or Not
-- Alien: Isolation
+Used for games that require a VR modification or support layer.
 
 ### PCVR-Native
 
-Games with built-in PCVR support.
+Used for games with built-in PCVR support.
 
-Examples:
+### Additional metadata tags
 
-- VRChat
-- War Thunder
-- Euro Truck Simulator 2
+Examples may include values such as:
+
+- Quest
+- Pico
+- PSVR2
+- VorpX
+- Full motion controls
+- Gamepad only
+- Dedicated VR mod
+
+## Release notes
+
+### 1.1.0
+
+- final single-pass tag generation introduced
+- update files used for efficient delta processing
+- improved data handling for mod metadata and platform normalization
+- AppData-based storage path moved to Playnite extension data directory
+- improved compatibility with Playnite script execution environment
+- final tag aggregation logic clarified and stabilized
 
 ## Development
 
-This project was created collaboratively by the author and Microsoft Copilot (GPT-5).
+This project was created collaboratively by the author and Microsoft Copilot.
 
-The author defined the feature set, performed all testing and validation, and made all release decisions. Microsoft Copilot assisted with code generation, troubleshooting, refactoring, and documentation.
-
-Every release is manually reviewed and tested before publication.
-
-## Note
-
-This extension currently targets Playnite 10 and is implemented as a PowerShell script extension.
+The author defined the feature set, testing, and release decisions. Microsoft Copilot assisted with code generation, refactoring, troubleshooting, and documentation.
 
 ## Credits
 
-PCVR Central
-
-https://pcvrcentral.com
-
-Playnite
-
-https://playnite.link
+- PCVR Central: https://pcvrcentral.com
+- Playnite: https://playnite.link
 
 ## License
 
